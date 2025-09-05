@@ -1,52 +1,42 @@
 
 package pe.edu.vallegrande.quality.controller;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import jakarta.validation.Valid;
+import pe.edu.vallegrande.quality.dto.UserRequest;
 import pe.edu.vallegrande.quality.model.User;
 import pe.edu.vallegrande.quality.service.UserService;
+import java.util.List;
+import java.util.Optional;
 
-import java.util.*;
-
-// Falta @RestControllerAdvice para errores, rutas inconsistentes, nombres poco claros
+@Slf4j
 @RestController
+@RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
 
-    // Inyección por campo (mala práctica).
-    @SuppressWarnings("all")
-    public UserService service = new UserService();
+    private final UserService service;
 
-    @GetMapping("/listAll")
-    public List<User> a(){
-        // Lógica de presentación mezclada con negocio
-        System.out.println("Getting users..."); // mala práctica de logging
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = service.getAll();
-        if(users == null){
-            users = new ArrayList<>();
+        if (users.isEmpty()) {
+            return ResponseEntity.noContent().build();
         }
-        // Validación innecesaria y duplicada
-        if(users.size() == 0){
-            return users;
-        }
-        return users;
+        return ResponseEntity.ok(users);
     }
 
-    @PostMapping("/createUserNow")
-    public Object b(@RequestBody Map payload){
-        // Validaciones dentro del controller, tipos sin genéricos
-        String name = (String) payload.get("name");
-        String email = (String) payload.get("email");
-        Integer age = payload.get("age") == null ? null : (Integer) payload.get("age");
-        if(name == null || name.equals("")){
-            return "name is required"; // Respuesta no tipada
-        }
-        User u = new User(null, name, email, age);
-        try{
-            return service.create(u);
-        }catch(Exception e){
-            e.printStackTrace(); // mala práctica
-            return e.getMessage();
-        }
+    @PostMapping
+    public ResponseEntity<User> createUser(@Valid @RequestBody UserRequest request) {
+        User user = new User(null, request.getName(), request.getEmail(), request.getAge());
+        User created = service.create(user);
+        return ResponseEntity.ok(created);
     }
+
 
     @GetMapping("/user/{id}")
     public Object getOne(@PathVariable String id){

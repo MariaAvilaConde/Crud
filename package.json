@@ -1,0 +1,22 @@
+{
+  "name": "crud_user",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ValeryChumpitaz/Crud_User.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ValeryChumpitaz/Crud_User/issues"
+  },
+  "homepage": "https://github.com/ValeryChumpitaz/Crud_User#readme"
+}
